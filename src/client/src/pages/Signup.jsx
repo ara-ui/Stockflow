@@ -71,110 +71,116 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="card">
-          <div className="card-header text-center">
-            <h2 className="text-2xl font-bold">Create your account</h2>
-            <p className="text-[var(--color-text-muted)] mt-1">Start managing your inventory with StockFlow</p>
-          </div>
-          <div className="card-body">
-            {error && (
-              <div className="mb-4 p-3 rounded-lg bg-[var(--color-danger-light)] text-[var(--color-danger)] text-sm">
-                {error}
-              </div>
-            )}
+    <div className="auth-page">
+      <div className="auth-card">
+        <header className="auth-header">
+          <div className="auth-logo">StockFlow</div>
+          <h2 className="auth-title">Create your account</h2>
+          <p className="auth-subtitle">Start managing your inventory with StockFlow</p>
+        </header>
 
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label htmlFor="organizationName" className="label">Organization Name</label>
-                <input
-                  id="organizationName"
-                  name="organizationName"
-                  type="text"
-                  className={`input ${errors.organizationName ? 'input-error' : ''}`}
-                  value={formData.organizationName}
-                  onChange={handleChange}
-                  required
-                  autoComplete="organization"
-                  placeholder="Acme Corp"
-                />
-                {errors.organizationName && <p className="error-text">{errors.organizationName}</p>}
-              </div>
+        <div className="auth-body">
+          {error && (
+            <div className="alert alert-error" role="alert">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 mt-0.5">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              {error}
+            </div>
+          )}
 
-              <div className="mb-4">
-                <label htmlFor="email" className="label">Email</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  className={`input ${errors.email ? 'input-error' : ''}`}
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  autoComplete="email"
-                  placeholder="you@example.com"
-                />
-                {errors.email && <p className="error-text">{errors.email}</p>}
-              </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="organizationName" className="label">Organization Name</label>
+              <input
+                id="organizationName"
+                name="organizationName"
+                type="text"
+                className={`input ${errors.organizationName ? 'input-error' : ''}`}
+                value={formData.organizationName}
+                onChange={handleChange}
+                required
+                autoComplete="organization"
+                placeholder="Acme Corp"
+              />
+              {errors.organizationName && <p className="error-text">{errors.organizationName}</p>}
+            </div>
 
-              <div className="mb-4">
-                <label htmlFor="password" className="label">Password</label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  className={`input ${errors.password ? 'input-error' : ''}`}
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                  minLength={8}
-                />
-                {errors.password && <p className="error-text">{errors.password}</p>}
-                <p className="help-text">At least 8 characters</p>
-              </div>
+            <div className="mb-4">
+              <label htmlFor="email" className="label">Email</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className={`input ${errors.email ? 'input-error' : ''}`}
+                value={formData.email}
+                onChange={handleChange}
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
+              />
+              {errors.email && <p className="error-text">{errors.email}</p>}
+            </div>
 
-              <div className="mb-6">
-                <label htmlFor="confirmPassword" className="label">Confirm Password</label>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  className={`input ${errors.confirmPassword ? 'input-error' : ''}`}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                />
-                {errors.confirmPassword && <p className="error-text">{errors.confirmPassword}</p>}
-              </div>
+            <div className="mb-4">
+              <label htmlFor="password" className="label">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                className={`input ${errors.password ? 'input-error' : ''}`}
+                value={formData.password}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+                placeholder="••••••••"
+                minLength={8}
+              />
+              {errors.password && <p className="error-text">{errors.password}</p>}
+              <p className="help-text">At least 8 characters</p>
+            </div>
 
-              <button
-                type="submit"
-                className="btn btn-primary w-full"
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner-sm" />
-                    Creating account...
-                  </>
-                ) : (
-                  'Create account'
-                )}
-              </button>
-            </form>
-          </div>
-          <div className="card-footer text-center">
-            <p className="text-sm text-[var(--color-text-muted)]">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium">Sign in</Link>
-            </p>
-          </div>
+            <div className="mb-6">
+              <label htmlFor="confirmPassword" className="label">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                className={`input ${errors.confirmPassword ? 'input-error' : ''}`}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+                placeholder="••••••••"
+              />
+              {errors.confirmPassword && <p className="error-text">{errors.confirmPassword}</p>}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <span className="spinner-sm" aria-hidden="true" />
+                  Creating account...
+                </>
+              ) : (
+                'Create account'
+              )}
+            </button>
+          </form>
         </div>
+
+        <footer className="auth-footer">
+          <p className="auth-footer-text">
+            Already have an account?{' '}
+            <Link to="/login" className="auth-footer-link">Sign in</Link>
+          </p>
+        </footer>
       </div>
     </div>
   );

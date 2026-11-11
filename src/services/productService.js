@@ -4,6 +4,15 @@ const Organization = require('../models/Organization');
 const { escapeRegex } = require('../utils/escapeRegex');
 const { getEffectiveThreshold, isLowStock } = require('../utils/lowStock');
 
+function enrichProduct(product, organization) {
+  const effectiveThreshold = getEffectiveThreshold(product, organization);
+  return {
+    ...product.toObject ? product.toObject() : product,
+    effectiveThreshold,
+    isLowStock: isLowStock(product, organization),
+  };
+}
+
 const ALLOWED_UPDATE_FIELDS = [
   'name',
   'sku',
@@ -119,13 +128,16 @@ async function listProducts(organizationId, search = '') {
     ];
   }
 
+  const organization = await Organization.findById(organizationId);
   const products = await Product.find(query).sort({ createdAt: -1 });
-  return products;
+  return products.map(p => enrichProduct(p, organization));
 }
 
 async function getProductById(organizationId, productId) {
   const product = await Product.findOne({ _id: productId, organizationId });
-  return product;
+  if (!product) return null;
+  const organization = await Organization.findById(organizationId);
+  return enrichProduct(product, organization);
 }
 
 async function updateProduct(organizationId, productId, updateData) {

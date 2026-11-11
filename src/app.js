@@ -29,6 +29,17 @@ app.use('/api', (req, res) => {
   });
 });
 
+// React SPA fallback for frontend routes
+const frontendIndex = path.join(__dirname, '../public/index.html');
+
+if (require('fs').existsSync(frontendIndex)) {
+  app.get('/{*splat}', (req, res, next) => {
+    res.sendFile(frontendIndex, (err) => {
+      if (err) next(err);
+    });
+  });
+}
+
 app.use(errorHandler);
 
 module.exports = app;

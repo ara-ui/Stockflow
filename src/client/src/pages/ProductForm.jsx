@@ -61,7 +61,7 @@ export default function ProductForm() {
     if (!formData.sku.trim()) newErrors.sku = 'SKU is required';
     else if (formData.sku.trim().length > 64) newErrors.sku = 'SKU must not exceed 64 characters';
     if (formData.description.length > 1000) newErrors.description = 'Description must not exceed 1000 characters';
-    if (formData.quantity === '' || !Number.isInteger(Number(formData.quantity)) || Number(formData.quantity) < 0) {
+    if (formData.quantity === '' || formData.quantity === null || formData.quantity === undefined || String(formData.quantity).trim() === '' || !Number.isInteger(Number(formData.quantity)) || Number(formData.quantity) < 0) {
       newErrors.quantity = 'Quantity must be a non-negative integer';
     }
     if (formData.costPrice !== '' && (isNaN(formData.costPrice) || Number(formData.costPrice) < 0)) {
@@ -123,168 +123,198 @@ export default function ProductForm() {
   }
 
   return (
-    <div className="max-w-2xl">
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-3xl">
+      <header className="page-header flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div className="flex items-center gap-4">
           <Link to="/products" className="btn btn-ghost">
-            ← Back
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">{isEditing ? 'Edit Product' : 'Add Product'}</h1>
-            <p className="text-[var(--color-text-muted)]">
+            <h1>{isEditing ? 'Edit Product' : 'Add Product'}</h1>
+            <p className="text-muted">
               {isEditing ? 'Update product details' : 'Create a new product in your inventory'}
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
       {error && (
-        <div className="mb-6 p-4 rounded-lg bg-[var(--color-danger-light)] text-[var(--color-danger)]">
+        <div className="alert alert-error" role="alert">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0 mt-0.5">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="card">
-        <div className="card-body space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="md:col-span-2">
-              <label htmlFor="name" className="label">Name *</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className={`input ${errors.name ? 'input-error' : ''}`}
-                value={formData.name}
-                onChange={handleChange}
-                required
-                maxLength={120}
-                placeholder="Product name"
-              />
-              {errors.name && <p className="error-text">{errors.name}</p>}
+      <section className="section-card">
+        <form onSubmit={handleSubmit}>
+          <div className="section-body">
+            <div className="form-section">
+              <h3 className="form-section-title">Basic Information</h3>
+              <div className="form-grid">
+                <div className="form-field full-width">
+                  <label htmlFor="name" className="label">Name <span className="text-danger" aria-hidden="true">*</span></label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    className={`input ${errors.name ? 'input-error' : ''}`}
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    maxLength={120}
+                    placeholder="Product name"
+                  />
+                  {errors.name && <p className="error-text">{errors.name}</p>}
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="sku" className="label">SKU <span className="text-danger" aria-hidden="true">*</span></label>
+                  <input
+                    id="sku"
+                    name="sku"
+                    type="text"
+                    className={`input ${errors.sku ? 'input-error' : ''}`}
+                    value={formData.sku}
+                    onChange={handleChange}
+                    required
+                    maxLength={64}
+                    placeholder="SKU-001"
+                  />
+                  {errors.sku && <p className="error-text">{errors.sku}</p>}
+                  <p className="help-text">Will be converted to uppercase</p>
+                </div>
+
+                <div className="form-field full-width">
+                  <label htmlFor="description" className="label">Description</label>
+                  <textarea
+                    id="description"
+                    name="description"
+                    className={`input ${errors.description ? 'input-error' : ''}`}
+                    value={formData.description}
+                    onChange={handleChange}
+                    rows={3}
+                    maxLength={1000}
+                    placeholder="Product description (optional)"
+                  />
+                  {errors.description && <p className="error-text">{errors.description}</p>}
+                </div>
+              </div>
             </div>
 
-            <div>
-              <label htmlFor="sku" className="label">SKU *</label>
-              <input
-                id="sku"
-                name="sku"
-                type="text"
-                className={`input ${errors.sku ? 'input-error' : ''}`}
-                value={formData.sku}
-                onChange={handleChange}
-                required
-                maxLength={64}
-                placeholder="SKU-001"
-              />
-              {errors.sku && <p className="error-text">{errors.sku}</p>}
-              <p className="help-text">Will be converted to uppercase</p>
+            <div className="form-section">
+              <h3 className="form-section-title">Inventory</h3>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label htmlFor="quantity" className="label">Quantity <span className="text-danger" aria-hidden="true">*</span></label>
+                  <input
+                    id="quantity"
+                    name="quantity"
+                    type="number"
+                    className={`input ${errors.quantity ? 'input-error' : ''}`}
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    required
+                    min={0}
+                    step={1}
+                    placeholder="0"
+                  />
+                  {errors.quantity && <p className="error-text">{errors.quantity}</p>}
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="lowStockThreshold" className="label">Low Stock Threshold</label>
+                  <input
+                    id="lowStockThreshold"
+                    name="lowStockThreshold"
+                    type="number"
+                    className={`input ${errors.lowStockThreshold ? 'input-error' : ''}`}
+                    value={formData.lowStockThreshold}
+                    onChange={handleChange}
+                    min={0}
+                    step={1}
+                    placeholder="Uses organization default"
+                  />
+                  {errors.lowStockThreshold && <p className="error-text">{errors.lowStockThreshold}</p>}
+                  <p className="help-text">Leave empty to use organization default. Set to 0 to disable.</p>
+                </div>
+              </div>
             </div>
 
-            <div className="md:col-span-2">
-              <label htmlFor="description" className="label">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                className={`input ${errors.description ? 'input-error' : ''}`}
-                value={formData.description}
-                onChange={handleChange}
-                rows={3}
-                maxLength={1000}
-                placeholder="Product description (optional)"
-              />
-              {errors.description && <p className="error-text">{errors.description}</p>}
-            </div>
+            <div className="form-section">
+              <h3 className="form-section-title">Pricing</h3>
+              <div className="form-grid">
+                <div className="form-field">
+                  <label htmlFor="costPrice" className="label">Cost Price</label>
+                  <input
+                    id="costPrice"
+                    name="costPrice"
+                    type="number"
+                    className={`input ${errors.costPrice ? 'input-error' : ''}`}
+                    value={formData.costPrice}
+                    onChange={handleChange}
+                    min={0}
+                    step={0.01}
+                    placeholder="0.00"
+                  />
+                  {errors.costPrice && <p className="error-text">{errors.costPrice}</p>}
+                </div>
 
-            <div>
-              <label htmlFor="quantity" className="label">Quantity *</label>
-              <input
-                id="quantity"
-                name="quantity"
-                type="number"
-                className={`input ${errors.quantity ? 'input-error' : ''}`}
-                value={formData.quantity}
-                onChange={handleChange}
-                required
-                min={0}
-                step={1}
-                placeholder="0"
-              />
-              {errors.quantity && <p className="error-text">{errors.quantity}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="costPrice" className="label">Cost Price</label>
-              <input
-                id="costPrice"
-                name="costPrice"
-                type="number"
-                className={`input ${errors.costPrice ? 'input-error' : ''}`}
-                value={formData.costPrice}
-                onChange={handleChange}
-                min={0}
-                step={0.01}
-                placeholder="0.00"
-              />
-              {errors.costPrice && <p className="error-text">{errors.costPrice}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="sellingPrice" className="label">Selling Price</label>
-              <input
-                id="sellingPrice"
-                name="sellingPrice"
-                type="number"
-                className={`input ${errors.sellingPrice ? 'input-error' : ''}`}
-                value={formData.sellingPrice}
-                onChange={handleChange}
-                min={0}
-                step={0.01}
-                placeholder="0.00"
-              />
-              {errors.sellingPrice && <p className="error-text">{errors.sellingPrice}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="lowStockThreshold" className="label">Low Stock Threshold</label>
-              <input
-                id="lowStockThreshold"
-                name="lowStockThreshold"
-                type="number"
-                className={`input ${errors.lowStockThreshold ? 'input-error' : ''}`}
-                value={formData.lowStockThreshold}
-                onChange={handleChange}
-                min={0}
-                step={1}
-                placeholder="Uses organization default"
-              />
-              {errors.lowStockThreshold && <p className="error-text">{errors.lowStockThreshold}</p>}
-              <p className="help-text">Leave empty to use organization default. Set to 0 to disable.</p>
+                <div className="form-field">
+                  <label htmlFor="sellingPrice" className="label">Selling Price</label>
+                  <input
+                    id="sellingPrice"
+                    name="sellingPrice"
+                    type="number"
+                    className={`input ${errors.sellingPrice ? 'input-error' : ''}`}
+                    value={formData.sellingPrice}
+                    onChange={handleChange}
+                    min={0}
+                    step={0.01}
+                    placeholder="0.00"
+                  />
+                  {errors.sellingPrice && <p className="error-text">{errors.sellingPrice}</p>}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card-footer flex justify-end gap-3">
-          <Link to="/products" className="btn btn-secondary">
-            Cancel
-          </Link>
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={submitting}
-          >
-            {submitting ? (
-              <>
-                <span className="spinner-sm" />
-                Saving...
-              </>
-            ) : isEditing ? (
-              'Update Product'
-            ) : (
-              'Create Product'
-            )}
-          </button>
-        </div>
-      </form>
+          <footer className="card-footer flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
+            <Link to="/products" className="btn btn-secondary w-full sm:w-auto">
+              Cancel
+            </Link>
+            <button
+              type="submit"
+              className="btn btn-primary w-full sm:w-auto"
+              disabled={submitting}
+            >
+              {submitting ? (
+                <>
+                  <span className="spinner-sm" aria-hidden="true" />
+                  Saving...
+                </>
+              ) : isEditing ? (
+                'Update Product'
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Create Product
+                </>
+              )}
+            </button>
+          </footer>
+        </form>
+      </section>
     </div>
   );
 }

@@ -1,9 +1,26 @@
+
+# Dependencies
 node_modules/
+client/node_modules/
+
+# Environment variables and secrets
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+
+# Build output
+public/
+client/dist/
+
+# Logs
 *.log
 npm-debug.log*
-.DS_Store
+
+# Coverage
 coverage/
 .nyc_output/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/

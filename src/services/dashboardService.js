@@ -9,14 +9,15 @@ async function getDashboardData(organizationId) {
   const totalProducts = products.length;
   const totalQuantity = products.reduce((sum, product) => sum + product.quantity, 0);
 
-  const lowStockProducts = products
-    .filter((product) => isLowStock(product, organization))
-    .map((product) => ({
-      name: product.name,
-      sku: product.sku,
-      quantity: product.quantity,
-      effectiveThreshold: getEffectiveThreshold(product, organization),
-    }));
+const lowStockProducts = products
+  .filter((product) => isLowStock(product, organization))
+  .map((product) => ({
+    _id: product._id,
+    name: product.name,
+    sku: product.sku,
+    quantity: product.quantity,
+    effectiveThreshold: getEffectiveThreshold(product, organization),
+  }));
 
   return {
     totalProducts,
