@@ -1,210 +1,228 @@
-# StockFlow - Inventory Management MVP
+# StockFlow — Inventory Management System
 
-A full-stack inventory management application built with Node.js, Express, MongoDB, React, and Vite.
+StockFlow is a full-stack inventory management MVP built with React, Node.js, Express and MongoDB. It helps organizations manage products, monitor stock levels and identify low-stock items.
 
-## Tech Stack
+## Live Demo
 
-**Backend:**
-- Node.js 22+ (CommonJS)
-- Express 5
-- Mongoose 9 (MongoDB ODM)
-- bcrypt (password hashing)
-- jsonwebtoken (JWT authentication)
-- helmet (security headers)
-- dotenv (environment config)
+Coming soon.
 
-**Frontend:**
+## GitHub Repository
+
+https://github.com/ara-ui/Stockflow
+
+## Technology Stack
+
+**Frontend**
 - React 18
 - React Router 6
-- Vite 5 (build tool)
-- CSS Custom Properties (theming with dark mode support)
+- Vite 5
+- CSS
 
-**Testing:**
-- Node.js built-in test runner (`node:test`, `node:assert`)
+**Backend**
+- Node.js
+- Express 5
+- MongoDB
+- Mongoose
+- JWT authentication
+- bcrypt
+- Helmet
+
+**Testing**
+- Node.js built-in test runner
 
 ## Features
 
 ### Authentication
-- User signup with organization creation
-- Email normalization (lowercase)
-- Password hashing with bcrypt (cost factor 10)
-- JWT tokens (1-day expiry, Bearer auth)
-- Protected routes with middleware
+- User registration and login
+- Organization creation during signup
+- Password hashing
+- JWT-based authentication
+- Protected routes
 
-### Products CRUD
-- Create, read, update, delete products
-- Tenant isolation (organizations only see their own data)
-- SKU uniqueness per organization (case-insensitive, stored uppercase)
-- Search by name or SKU (regex-safe)
-- Input validation (quantity integers, non-negative prices, etc.)
+### Product Management
+- Create, view, update and delete products
+- Product name, SKU and description
+- Quantity on hand
+- Cost and selling prices
+- Product-specific low-stock thresholds
+- Search by product name or SKU
+- SKU uniqueness within each organization
 
-### Low-Stock Logic
-- Organization-level default threshold (default: 5)
-- Product-level threshold override (nullable)
-- Threshold 0 = only quantity 0 is low stock
-- Shared utility functions (`getEffectiveThreshold`, `isLowStock`)
-- `isLowStock` field included in all product responses
-
-### Dashboard API
+### Dashboard
 - Total product count
-- Total quantity across all products
-- Low-stock products list with effective thresholds
-- Tenant isolation enforced
+- Total quantity on hand
+- Low-stock product list
+- Organization-specific inventory data
 
-### Frontend UI
-- Login / Signup pages
-- Dashboard with stats cards and low-stock table
-- Products list with search and inline actions
-- Product create/edit modal forms
-- Responsive design with dark mode support
-- Sidebar navigation with user/org info
+### Low-Stock Management
+- Organization-level default threshold
+- Product-level threshold override
+- Low stock when quantity is less than or equal to the effective threshold
+
+### Organization Isolation
+Each organization can access only its own users' inventory data.
 
 ## Project Structure
 
-```
-stockflow/
-├── package.json
-├── .env                    # Environment variables (not committed)
-├── .env.example           # Environment template
-├── .gitignore
-├── vite.config.js         # Vite config (root: src/client)
+```text
+Stockflow/
+├── public/                 # Production React build
 ├── src/
-│   ├── server.js          # App entry point
-│   ├── app.js             # Express app setup
-│   ├── config/
-│   │   ├── env.js         # Env validation
-│   │   └── db.js          # Mongoose connection
-│   ├── middleware/
-│   │   ├── auth.js        # JWT verification
-│   │   └── errorHandler.js # Centralized error handling
-│   ├── utils/
-│   │   ├── AppError.js    # Custom error class
-│   │   ├── escapeRegex.js # Regex escaping for search
-│   │   └── lowStock.js    # Low-stock utility functions
-│   ├── models/
-│   │   ├── Organization.js
-│   │   ├── User.js
-│   │   └── Product.js
-│   ├── services/
-│   │   ├── authService.js
-│   │   ├── productService.js
-│   │   └── dashboardService.js
+│   ├── client/             # React frontend
+│   │   └── src/
+│   │       ├── components/
+│   │       ├── context/
+│   │       ├── pages/
+│   │       └── services/
+│   ├── config/             # Environment and DB configuration
 │   ├── controllers/
-│   │   ├── authController.js
-│   │   ├── productController.js
-│   │   └── dashboardController.js
+│   ├── middleware/
+│   ├── models/
 │   ├── routes/
-│   │   ├── authRoutes.js
-│   │   ├── productRoutes.js
-│   │   └── dashboardRoutes.js
-│   └── client/            # React frontend
-│       ├── index.html
-│       ├── src/
-│       │   ├── main.jsx
-│       │   ├── App.jsx
-│       │   ├── index.css
-│       │   ├── context/
-│       │   │   └── AuthContext.jsx
-│       │   ├── services/
-│       │   │   └── api.js
-│       │   ├── components/
-│       │   │   ├── Layout.jsx
-│       │   │   └── ProtectedRoute.jsx
-│       │   └── pages/
-│       │       ├── Login.jsx
-│       │       ├── Signup.jsx
-│       │       ├── Dashboard.jsx
-│       │       ├── Products.jsx
-│       │       └── ProductForm.jsx
-└── tests/
-    ├── helpers.js
-    ├── health.test.js
-    ├── models.test.js
-    ├── auth.test.js
-    ├── products.test.js
-    ├── tenant-isolation.test.js
-    ├── lowstock.test.js
-    └── dashboard.test.js
+│   ├── services/
+│   ├── utils/
+│   ├── app.js
+│   └── server.js
+├── tests/
+├── .env.example
+├── .gitignore
+├── package.json
+├── package-lock.json
+└── vite.config.js
 ```
 
-## Environment Variables
+## Prerequisites
 
-Copy `.env.example` to `.env` and configure:
+- Node.js 22 or later
+- npm
+- MongoDB local instance or MongoDB Atlas
+
+## Local Setup
+
+Clone the repository:
+
+```bash
+git clone https://github.com/ara-ui/Stockflow.git
+cd Stockflow
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a `.env` file in the project root using `.env.example` as a template.
+
+Configure:
 
 ```env
 PORT=3000
 MONGODB_URI=mongodb://127.0.0.1:27017/stockflow
 MONGODB_URI_TEST=mongodb://127.0.0.1:27017/stockflow_test
-JWT_SECRET=your-super-secret-jwt-key-change-in-production
+JWT_SECRET=replace_with_a_secure_random_secret
 NODE_ENV=development
 ```
 
-## Scripts
+Start the backend:
 
 ```bash
-# Development
-npm run dev          # Start backend with nodemon (port 3000)
-npm run client       # Start frontend with Vite (port 5173)
-npm run dev:full     # Run both concurrently
+npm run dev
+```
 
-# Production
-npm run build        # Build frontend to public/
-npm start            # Start production server
+Start the frontend in another terminal:
 
-# Testing
-npm test             # Run all 136 tests (sequential)
+```bash
+npm run client
+```
+
+Open:
+
+http://localhost:5173
+
+## Production Build
+
+Build the React frontend:
+
+```bash
+npm run build
+```
+
+The production frontend is generated in `public/`.
+
+Start the Express server:
+
+```bash
+npm start
 ```
 
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/signup` - Create organization + user
-- `POST /api/auth/login` - Get JWT token
 
-### Products (requires Bearer token)
-- `GET /api/products` - List products (query: `search`)
-- `GET /api/products/:id` - Get single product
-- `POST /api/products` - Create product
-- `PUT /api/products/:id` - Update product
-- `DELETE /api/products/:id` - Delete product
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/auth/signup` | Register a user and organization |
+| POST | `/api/auth/login` | Authenticate a user |
 
-### Dashboard (requires Bearer token)
-- `GET /api/dashboard` - Get aggregated metrics
+### Products
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/products` | List products |
+| GET | `/api/products/:id` | Get product |
+| POST | `/api/products` | Create product |
+| PUT | `/api/products/:id` | Update product |
+| DELETE | `/api/products/:id` | Delete product |
+
+Product endpoints require a valid Bearer token.
+
+### Dashboard
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/dashboard` | Get inventory summary |
 
 ### Health
-- `GET /api/health` - Health check
 
-## Data Models
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/health` | Application health check |
 
-### Organization
-- `name` (String, 2-80 chars, required)
-- `defaultLowStockThreshold` (Integer ≥ 0, default: 5)
+## Environment Variables
 
-### User
-- `email` (String, unique, lowercase, required)
-- `passwordHash` (String, select: false)
-- `organizationId` (ObjectId, ref: Organization, required)
+| Variable | Description |
+|---|---|
+| `PORT` | Server port; provided by hosting platform in production |
+| `MONGODB_URI` | MongoDB connection string |
+| `MONGODB_URI_TEST` | Separate test database connection |
+| `JWT_SECRET` | Secret used to sign authentication tokens |
+| `NODE_ENV` | Application environment |
 
-### Product
-- `organizationId` (ObjectId, ref: Organization, required)
-- `name` (String, 1-120 chars, required)
-- `sku` (String, 1-64 chars, uppercase, required)
-- `description` (String, max 1000 chars, optional)
-- `quantity` (Integer ≥ 0, default: 0)
-- `costPrice` (Number ≥ 0, optional)
-- `sellingPrice` (Number ≥ 0, optional)
-- `lowStockThreshold` (Integer ≥ 0, nullable, optional)
-- Compound unique index: `{ organizationId: 1, sku: 1 }`
+Never commit `.env` or production credentials to GitHub.
 
-## Test Safety
+## Testing
 
-Tests use a separate database (`stockflow_test`) with 4 safety checks:
-1. `NODE_ENV` must be `test`
-2. URI must contain `test`
-3. URI must not be production URI
-4. Database name must be `stockflow_test`
+Run the backend test suite:
 
-Run tests: `npm test` (136 tests, all passing)
+```bash
+npm test
+```
+
+The tests cover authentication, product CRUD, dashboard metrics, low-stock logic, model validation and organization-level data isolation.
+
+## Deployment
+
+StockFlow can be deployed as a single Render Web Service serving the React production build and Express API.
+
+Recommended Render configuration:
+
+- Runtime: Node
+- Build command: `npm ci --include=dev && npm run build`
+- Start command: `npm start`
+- Health check: `/api/health`
+
+Configure `MONGODB_URI`, `JWT_SECRET` and `NODE_ENV=production` in Render's Environment settings.
 
 ## License
 
